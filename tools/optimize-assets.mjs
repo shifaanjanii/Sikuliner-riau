@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-for (const name of ['gulai-patin', 'bolu-kemojo', 'mie-sagu']) {
+for (const name of ['gulai-patin', 'bolu-kemojo', 'mie-sagu', 'lopek-bugi', 'lempuk-durian']) {
   const source = path.join(root, 'public/assets/images', name + '.png');
   const output = path.join(root, 'public/assets/images', name + '.webp');
   await sharp(source).resize({ width: 960, withoutEnlargement: true }).webp({ quality: 86, alphaQuality: 100 }).toFile(output);

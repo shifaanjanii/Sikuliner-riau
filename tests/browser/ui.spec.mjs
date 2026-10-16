@@ -4,9 +4,19 @@ import path from 'node:path';
 test('desktop hero renders, changes food and respects the latest carousel action', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto('/?demo=1');
+  await page.goto('/?demo=1', { waitUntil: 'domcontentloaded' });
+  await page.getByRole('button', { name: 'Jeda animasi', exact: true }).click();
+  await page.getByRole('button', { name: 'Tampilkan Gulai Ikan Patin', exact: true }).click();
+  await expect(page.locator('[data-featured-name]')).toHaveText('Gulai Ikan Patin');
   await expect(page.getByRole('heading', { name: 'Kenali Riau, lewat rasanya.' })).toBeVisible();
   await expect(page.locator('[data-main-plate] img')).toHaveJSProperty('complete', true);
+  for (const element of await page.locator('.reveal').all()) {
+    await element.scrollIntoViewIfNeeded();
+    await expect(element).toHaveClass(/is-revealed/);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  expect(await page.locator('.hero h1').evaluate(el => el.getBoundingClientRect().left)).toBeGreaterThanOrEqual(0);
   await page.screenshot({ path: 'test-results/home-desktop.png', fullPage: true, animations: 'disabled' });
   await page.getByRole('button', { name: 'Makanan unggulan berikutnya' }).click();
   await expect(page.locator('[data-featured-name]')).toHaveText('Bolu Kemojo');
@@ -21,24 +31,25 @@ test('login and registration validate beside fields without simulating authentic
   await page.goto('/masuk');
   await page.getByRole('button', { name: 'Masuk', exact: true }).click();
   await expect(page.locator('[data-error-for=email]')).toContainText('perlu diisi');
-  await page.getByLabel('Email', { exact: true }).fill('not-an-email');
-  await page.getByLabel('Kata sandi', { exact: true }).fill('ui-test-value');
+  await page.getByRole('textbox', { name: 'Email', exact: true }).fill('not-an-email');
+  await page.getByLabel(/^Kata sandi/).fill('ui-test-value');
   await page.getByRole('button', { name: 'Masuk', exact: true }).click();
   await expect(page.locator('[data-error-for=email]')).toContainText('email yang valid');
   await page.getByRole('button', { name: 'Tampilkan kata sandi', exact: true }).click();
-  await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveAttribute('type', 'text');
+  await expect(page.getByLabel(/^Kata sandi/)).toHaveAttribute('type', 'text');
   await page.getByRole('button', { name: 'Sembunyikan kata sandi' }).click();
-  await expect(page.getByLabel('Kata sandi', { exact: true })).toHaveAttribute('type', 'password');
-  await page.getByLabel('Email', { exact: true }).fill('ui-test@example.invalid');
+  await expect(page.getByLabel(/^Kata sandi/)).toHaveAttribute('type', 'password');
+  await page.getByRole('textbox', { name: 'Email', exact: true }).fill('ui-test@example.invalid');
   await page.getByRole('button', { name: 'Masuk', exact: true }).click();
   await expect(page.locator('.form-feedback')).toContainText('Tidak ada proses masuk');
+  await expect(page.getByRole('textbox', { name: 'Email', exact: true })).not.toHaveAttribute('aria-invalid', 'true');
   await expect(page).toHaveURL(/\/masuk$/);
   await page.screenshot({ path: 'test-results/login-desktop.png', fullPage: true });
   await page.goto('/daftar');
   await page.getByLabel('Nama lengkap').fill('Pengujian UI');
-  await page.getByLabel('Email', { exact: true }).fill('ui-test@example.invalid');
-  await page.getByLabel('Kata sandi', { exact: true }).fill('ui-test-value');
-  await page.getByLabel('Konfirmasi kata sandi', { exact: true }).fill('different');
+  await page.getByRole('textbox', { name: 'Email', exact: true }).fill('ui-test@example.invalid');
+  await page.getByLabel(/^Kata sandi/).fill('ui-test-value');
+  await page.getByLabel(/^Konfirmasi kata sandi/).fill('different');
   await page.getByRole('button', { name: 'Daftar', exact: true }).click();
   await expect(page.locator('[data-error-for=password_confirmation]')).toContainText('belum sama');
   await expect(page.locator('[name=role]')).toHaveCount(0);
@@ -68,8 +79,8 @@ test('catalog combines URL filters, survives refresh, and resets no results', as
 
 test('admin edit retains values, previews photos, and never claims to save', async ({ page }) => {
   await page.goto('/preview/admin/makanan/contoh-kemojo/edit?demo=1');
-  await expect(page.getByLabel('Nama makanan', { exact: true })).toHaveValue('Bolu Kemojo');
-  await expect(page.getByLabel('Kategori', { exact: true })).toHaveValue('Kue Tradisional');
+  await expect(page.getByRole('textbox', { name: 'Nama makanan', exact: true })).toHaveValue('Bolu Kemojo');
+  await expect(page.getByRole('combobox', { name: 'Kategori', exact: true })).toHaveValue('Kue Tradisional');
   const oldPhoto = await page.locator('[data-upload-preview]').getAttribute('src');
   await page.getByLabel('Pilih foto dari perangkat').setInputFiles(path.resolve('public/assets/images/favicon.svg'));
   await expect(page.locator('#photo-error')).toContainText('format gambar');
@@ -80,6 +91,7 @@ test('admin edit retains values, previews photos, and never claims to save', asy
   await page.getByLabel('Asal kabupaten/kota').selectOption('kampar');
   await page.getByRole('button', { name: 'Simpan Perubahan' }).click();
   await expect(page.locator('.form-feedback')).toContainText('belum dapat disimpan');
+  await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, 0); });
   await page.screenshot({ path: 'test-results/admin-form-desktop.png', fullPage: true });
 });
 
@@ -101,8 +113,9 @@ test('delete confirmation supports cancel, Escape and preview feedback', async (
 });
 
 test('mobile public and admin menus work, with no page-wide horizontal overflow', async ({ page }) => {
+  test.setTimeout(90000);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/?demo=1');
+  await page.goto('/?demo=1', { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: 'Buka menu navigasi' }).click();
   await expect(page.locator('#public-menu')).toBeVisible();
   await page.getByRole('link', { name: 'Jelajah Kuliner', exact: true }).first().click();
@@ -116,7 +129,15 @@ test('mobile public and admin menus work, with no page-wide horizontal overflow'
   await expect(page.locator('#admin-sidebar')).toHaveClass(/is-open/);
   await page.keyboard.press('Escape');
   await expect(page.locator('#admin-sidebar')).not.toHaveClass(/is-open/);
-  await page.goto('/?demo=1');
+  await page.goto('/?demo=1', { waitUntil: 'domcontentloaded' });
+  await page.getByRole('button', { name: 'Jeda animasi', exact: true }).click();
+  await page.getByRole('button', { name: 'Tampilkan Gulai Ikan Patin', exact: true }).click();
+  for (const element of await page.locator('.reveal').all()) {
+    await element.scrollIntoViewIfNeeded();
+    await expect(element).toHaveClass(/is-revealed/);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   await page.screenshot({ path: 'test-results/home-mobile.png', fullPage: true, animations: 'disabled' });
 });
 
@@ -131,4 +152,19 @@ test('reduced motion and JavaScript-free browsing keep content available', async
   await expect(nojs.locator('.food-card')).toHaveCount(1);
   await expect(nojs.getByRole('link', { name: /Baca Selengkapnya/ })).toBeVisible();
   await context.close();
+});
+
+test('small phones and tablets keep the hero, forms and admin inside the viewport', async ({ page }) => {
+  test.setTimeout(90000);
+  for (const width of [320, 768]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const url of ['/', '/kuliner?demo=1', '/masuk', '/daftar', '/preview/admin/wilayah', '/preview/admin/makanan/tambah']) {
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), `${width}px ${url}`).toBeLessThanOrEqual(width);
+      if (url === '/') {
+        await page.getByRole('button', { name: 'Jeda animasi' }).click();
+        expect(await page.locator('.hero h1').evaluate(el => el.getBoundingClientRect().left)).toBeGreaterThanOrEqual(0);
+      }
+    }
+  }
 });

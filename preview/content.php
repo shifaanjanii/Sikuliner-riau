@@ -11,8 +11,10 @@ return [
         'Kabupaten Siak', 'Kota Dumai', 'Kota Pekanbaru',
     ]),
     'featured' => [
-        ['name' => 'Gulai Ikan Patin', 'category' => 'Makanan Utama', 'photo' => 'images/gulai-patin.png', 'caption' => 'Hangat rempah, kaya rasa.'],
-        ['name' => 'Bolu Kemojo', 'category' => 'Kue Tradisional', 'photo' => 'images/bolu-kemojo.png', 'caption' => 'Manisnya cerita dari Riau.'],
-        ['name' => 'Mie Sagu', 'category' => 'Makanan Utama', 'photo' => 'images/mie-sagu.png', 'caption' => 'Kenali ragam olahan sagu.'],
+        ['name' => 'Gulai Ikan Patin', 'category' => 'Makanan Utama', 'photo' => 'images/gulai-patin.webp', 'caption' => 'Hangat rempah, kaya rasa.'],
+        ['name' => 'Bolu Kemojo', 'category' => 'Kue Tradisional', 'photo' => 'images/bolu-kemojo.webp', 'caption' => 'Manisnya cerita dari Riau.'],
+        ['name' => 'Mie Sagu', 'category' => 'Makanan Utama', 'photo' => 'images/mie-sagu.webp', 'caption' => 'Kenali ragam olahan sagu.'],
+        ['name' => 'Lopek Bugi', 'category' => 'Kue Tradisional', 'photo' => 'images/lopek-bugi.webp', 'caption' => 'Kudapan dengan cerita tradisi.'],
+        ['name' => 'Lempuk Durian', 'category' => 'Oleh-oleh', 'photo' => 'images/lempuk-durian.webp', 'caption' => 'Manis legit untuk dikenal.'],
     ],
 ];

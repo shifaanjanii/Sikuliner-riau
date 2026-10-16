@@ -6,4 +6,5 @@
 <?php if ($ui->options['demo'] || $ui->options['adminPreview']): ?><meta name="robots" content="noindex,nofollow"><?php endif; ?>
 <link rel="icon" href="<?= $e($ui->asset('images/favicon.svg')) ?>" type="image/svg+xml">
 <link rel="stylesheet" href="<?= $e($ui->asset('css/app.css')) ?>">
+<?php if (!empty($publicPage)): ?><link rel="stylesheet" href="<?= $e($ui->asset('css/landing.css')) ?>"><?php endif; ?>
 <script src="<?= $e($ui->asset('js/app.js')) ?>" defer></script>

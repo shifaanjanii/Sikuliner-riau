@@ -1,7 +1,7 @@
 <div class="auth-heading">
     <span class="eyebrow"><?= $register ? 'AWAL CERITA BARU' : 'SENANG BERTEMU LAGI' ?></span>
     <h1><?= $register ? 'Yuk, kenalan dulu.' : 'Selamat datang<br>kembali.' ?></h1>
-    <p><?= $register ? 'Buat akun untuk menjadi bagian dari SiKuliner Riau.' : 'Masuk ke akunmu dan lanjutkan perjalanan rasa.' ?></p>
+    <p><?= $register ? 'Buat akun pengguna untuk menjadi bagian dari SiKuliner Riau.' : 'Masuk menggunakan akun pengguna atau admin SiKuliner Riau.' ?></p>
 </div>
 <?php if (!$ui->options['connected']): ?><div class="notice notice-soft"><?= $ui->icon('info') ?><span><?= $register ? 'Pendaftaran' : 'Layanan masuk' ?> belum tersedia. Kamu tetap bisa <a href="<?= $e($ui->url('catalog')) ?>">menjelajah kuliner</a> tanpa akun.</span></div><?php endif; ?>
 <?php if ($ui->error('general')): ?><div class="notice notice-error" role="alert"><?= $e($ui->error('general')) ?></div><?php endif; ?>
@@ -20,3 +20,4 @@
     <p class="form-feedback" role="status" tabindex="-1"></p>
 </form>
 <p class="auth-switch"><?= $register ? 'Sudah punya akun?' : 'Belum punya akun?' ?> <a href="<?= $e($ui->url($register ? 'login' : 'register')) ?>"><?= $register ? 'Masuk di sini' : 'Daftar sekarang' ?> <?= $ui->icon('arrow') ?></a></p>
+<?php if ($register): ?><p class="field-hint" style="margin-top:18px;text-align:center">Akun admin disiapkan oleh pengelola SiKuliner Riau.</p><?php endif; ?>

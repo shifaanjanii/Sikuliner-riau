@@ -1,4 +1,4 @@
 <a class="brand" href="<?= $e($ui->url('home')) ?>" aria-label="SiKuliner Riau, Beranda">
-    <span class="brand-mark"><svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M6 19h24a12 12 0 0 1-24 0Z" fill="currentColor"/><path d="M5 19h26M12 32h12M13 6c-4 4 4 5 0 9m6-12c-4 4 4 5 0 9m6-6c-4 4 4 5 0 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-    <span>SiKuliner<span class="brand-region">RIAU</span></span>
+    <span class="brand-mark"><svg viewBox="0 0 44 44" fill="currentColor" aria-hidden="true"><path d="M2 21h40a20 20 0 0 1-40 0Z"/><path d="M22 18C15 12 17 5 22 1c5 7 5 12 0 17ZM17 18C9 19 6 13 6 8c8 1 12 4 11 10ZM26 18c0-8 6-11 12-11-1 7-5 11-12 11Z"/><path d="M3 21h38" stroke="#fff" stroke-width="1.5"/></svg></span>
+    <span>SiKuliner Riau</span>
 </a>

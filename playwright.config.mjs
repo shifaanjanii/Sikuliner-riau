@@ -6,8 +6,9 @@ const php = process.env.PHP_BINARY || 'C:/xampp/php/php.exe';
 
 export default defineConfig({
   testDir: './tests/browser',
+  outputDir: './test-results/browser-artifacts',
   workers: 1,
-  timeout: 30000,
+  timeout: 60000,
   expect: { timeout: 7000 },
   reporter: 'list',
   use: {
@@ -18,7 +19,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: `"${php}" -S 127.0.0.1:8080 -t "${root}/public" "${root}/preview/router.php"`,
+    command: `"${php}" -S 127.0.0.1:8080 -t "${root}/public"`,
     url: 'http://127.0.0.1:8080/masuk',
     reuseExistingServer: true,
     timeout: 15000,

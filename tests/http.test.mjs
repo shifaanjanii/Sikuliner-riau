@@ -69,7 +69,7 @@ test('unknown pages and records return 404', async () => {
   }
 });
 test('local assets are available', async () => {
-  for (const path of ['/assets/css/app.css', '/assets/js/app.js', '/assets/images/gulai-patin.png', '/assets/images/bolu-kemojo.png', '/assets/images/mie-sagu.png', '/assets/images/food-placeholder.svg']) {
+  for (const path of ['/assets/css/app.css', '/assets/css/landing.css', '/assets/js/app.js', '/assets/images/gulai-patin.webp', '/assets/images/bolu-kemojo.webp', '/assets/images/mie-sagu.webp', '/assets/images/lopek-bugi.webp', '/assets/images/lempuk-durian.webp', '/assets/images/food-placeholder.svg', '/assets/fonts/manrope-latin-800-normal.woff2']) {
     assert.equal((await fetch(base + path)).status, 200, path);
   }
 });

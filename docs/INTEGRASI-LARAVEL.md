@@ -51,6 +51,8 @@ Form memakai `fields` untuk menyesuaikan nama input dengan request validation ya
 
 ## Autentikasi dan admin
 
+Keputusan pengguna: akun admin dibuat melalui backend; registrasi publik hanya membuat akun pengguna. Kedua peran memakai halaman Login yang sama. Backend harus menetapkan role registrasi publik sebagai pengguna dan tidak mempercayai nilai role dari permintaan. Pengelolaan restoran, Maps serta ulasan/bintang tetap menjadi tahap berikutnya sesuai [peran dan alur akun](PERAN-DAN-ALUR.md).
+
 - `login`/`register` adalah route GET; `login.store`/`register.store` adalah nama route POST asli, yang boleh memetakan ke nama route GET bila Laravel menggunakan URL yang sama.
 - Semua form mutasi menyertakan `csrf_field()` dari sesi Laravel. Preview tidak membuat token atau sesi autentikasi palsu.
 - Login valid/tidak valid, hashing, registrasi dengan role pengguna biasa, regenerasi sesi, rate limit, redirect role, serta logout/invalidate sesi tetap dikerjakan controller autentikasi asli.

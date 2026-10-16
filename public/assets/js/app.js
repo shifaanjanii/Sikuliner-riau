@@ -124,7 +124,9 @@
         try { items = JSON.parse($('[data-featured-data]', hero).textContent); } catch (_) { /* Keep the server-rendered first slide. */ }
         const plate = $('[data-main-plate]', hero);
         const image = $('img', plate || hero);
-        let current = 0, changeVersion = 0;
+        const art = $('.hero-art', hero);
+        const pauseButton = $('[data-hero-autoplay]', hero);
+        let current = 0, changeVersion = 0, userPaused = false, pointerStart = null;
         const change = direction => {
             if (items.length < 2 || !image || !plate) return;
             current = (current + direction + items.length) % items.length;
@@ -143,12 +145,65 @@
                 $('[data-featured-name]', hero).textContent = item.name;
                 $('[data-featured-category]', hero).textContent = item.category;
                 $('[data-featured-caption]', hero).textContent = item.caption;
-                $$('[data-slide-dot]', hero).forEach((dot, index) => dot.classList.toggle('is-active', index === target));
+                $$('[data-slide-dot]', hero).forEach((dot, index) => {
+                    dot.classList.toggle('is-active', index === target);
+                    dot.setAttribute('aria-pressed', String(index === target));
+                });
                 plate.classList.remove('is-changing');
+                if (!reducedMotion.matches) {
+                    $('[data-featured-name]', hero).animate([{ opacity: 0, transform: 'translateY(7px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 380, easing: 'ease-out' });
+                }
             });
         };
         $('[data-hero-prev]', hero)?.addEventListener('click', () => change(-1));
         $('[data-hero-next]', hero)?.addEventListener('click', () => change(1));
+        $$('[data-slide-dot]', hero).forEach(dot => dot.addEventListener('click', () => {
+            const target = Number(dot.dataset.slideDot);
+            if (target !== current) change(target - current);
+        }));
+        hero.addEventListener('keydown', event => {
+            if (!event.target.closest('.carousel-dots,.carousel-buttons')) return;
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                event.preventDefault(); change(event.key === 'ArrowRight' ? 1 : -1);
+            }
+        });
+        const updateMotion = () => {
+            hero.dataset.motionPaused = String(userPaused || reducedMotion.matches);
+            if (!pauseButton) return;
+            pauseButton.hidden = reducedMotion.matches || items.length < 2;
+            pauseButton.textContent = userPaused ? 'Putar otomatis' : 'Jeda animasi';
+            pauseButton.setAttribute('aria-pressed', String(userPaused));
+        };
+        pauseButton?.addEventListener('click', () => { userPaused = !userPaused; updateMotion(); });
+        reducedMotion.addEventListener('change', updateMotion);
+        updateMotion();
+        const autoTimer = window.setInterval(() => {
+            if (userPaused || reducedMotion.matches || document.hidden || hero.matches(':hover,:focus-within')) return;
+            const bounds = hero.getBoundingClientRect();
+            if (bounds.bottom > 120 && bounds.top < window.innerHeight * .7) change(1);
+        }, 7000);
+        window.addEventListener('pagehide', () => window.clearInterval(autoTimer), { once: true });
+
+        let parallaxFrame = 0;
+        const resetParallax = () => { art?.style.setProperty('--parallax-x', '0px'); art?.style.setProperty('--parallax-y', '0px'); };
+        hero.addEventListener('pointermove', event => {
+            if (event.pointerType !== 'mouse' || reducedMotion.matches || userPaused || !window.matchMedia('(pointer:fine)').matches) return;
+            window.cancelAnimationFrame(parallaxFrame);
+            parallaxFrame = window.requestAnimationFrame(() => {
+                const box = hero.getBoundingClientRect();
+                art?.style.setProperty('--parallax-x', `${((event.clientX - box.left) / box.width - .5) * 12}px`);
+                art?.style.setProperty('--parallax-y', `${((event.clientY - box.top) / box.height - .5) * 10}px`);
+            });
+        });
+        hero.addEventListener('pointerleave', resetParallax);
+        art?.addEventListener('pointerdown', event => { if (event.pointerType === 'touch') pointerStart = { x: event.clientX, y: event.clientY }; });
+        art?.addEventListener('pointerup', event => {
+            if (!pointerStart) return;
+            const dx = event.clientX - pointerStart.x, dy = event.clientY - pointerStart.y;
+            if (Math.abs(dx) > 45 && Math.abs(dy) < 40) change(dx < 0 ? 1 : -1);
+            pointerStart = null;
+        });
+        art?.addEventListener('pointercancel', () => { pointerStart = null; });
     }
 
     $$('[data-upload]').forEach(input => {
@@ -227,8 +282,7 @@
         }), { threshold: .06 });
         $$('.reveal').forEach(element => {
             element.classList.add('is-reveal-ready'); observer.observe(element);
-            // Also reveal if an observer is interrupted or the page is restored from history.
-            setTimeout(() => element.classList.add('is-revealed'), 2500);
         });
+        window.addEventListener('pageshow', event => { if (event.persisted) $$('.reveal').forEach(element => element.classList.add('is-revealed')); });
     }
 })();
