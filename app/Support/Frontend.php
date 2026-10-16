@@ -52,6 +52,9 @@ final class Frontend
                 'foods.index' => '/admin/makanan', 'foods.create' => '/admin/makanan/tambah',
                 'foods.edit' => '/admin/makanan/{id}/edit', 'foods.store' => '/admin/makanan',
                 'foods.update' => '/admin/makanan/{id}', 'foods.destroy' => '/admin/makanan/{id}',
+                'shops.index' => '/admin/toko', 'shops.create' => '/admin/toko/tambah',
+                'shops.edit' => '/admin/toko/{id}/edit', 'shops.store' => '/admin/toko',
+                'shops.update' => '/admin/toko/{id}', 'shops.destroy' => '/admin/toko/{id}',
             ];
             if (!isset($routes[$name])) {
                 throw new \InvalidArgumentException('Unknown UI route: ' . $name);

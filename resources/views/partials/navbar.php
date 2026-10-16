@@ -17,6 +17,7 @@
                         <p class="form-feedback" role="status"></p>
                     </form>
                 <?php else: ?>
+                    <a class="button button-ghost button-small" href="<?= $e($ui->url('register')) ?>">Daftar</a>
                     <a class="button button-primary button-small" href="<?= $e($ui->url('login')) ?>">Masuk <?= $ui->icon('arrow') ?></a>
                 <?php endif; ?>
             </div>

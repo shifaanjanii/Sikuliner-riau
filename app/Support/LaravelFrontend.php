@@ -41,7 +41,7 @@ final class LaravelFrontend
         $parameterMap = $bindings['parameterMap'] ?? [];
         return new Frontend($data, [
             'connected' => true,
-            'csrf' => csrf_field(),
+            'csrf' => (string) csrf_field(),
             'assetBase' => asset('assets'),
             'fieldMap' => $bindings['fields'] ?? [],
             'queryMap' => $bindings['queries'] ?? [],

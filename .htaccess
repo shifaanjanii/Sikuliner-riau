@@ -1,8 +1,15 @@
 Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(?:app|resources|preview|docs|integration|tests)(?:/|$) - [F,L]
-    RewriteRule ^(?:\.|README|AGENTS|composer|package) - [F,L,NC]
+    RewriteRule ^(?:app|bootstrap|config|database|resources|storage|tests|vendor)(?:/|$) - [F,L]
+    RewriteRule ^(?:\.|composer|artisan|phpunit) - [F,L,NC]
+
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/Sikuliner-riau/public/%{REQUEST_URI} -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/Sikuliner-riau/public/$1 -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
