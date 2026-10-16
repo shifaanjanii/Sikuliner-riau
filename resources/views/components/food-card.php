@@ -1,5 +1,0 @@
-<?php $foodUrl = $ui->url('food.show', ['id' => $food['id']], ['q' => $d['q'], 'region' => $d['region'], 'page' => $d['page']]); ?>
-<article class="food-card reveal" style="--reveal-delay:<?= (int) (($index ?? 0) % 3) * 90 ?>ms">
-    <a class="food-image" href="<?= $e($foodUrl) ?>" tabindex="-1" aria-hidden="true"><img class="<?= !empty($food['photo']) && strpos($food['photo'], 'images/') !== 0 ? 'is-photo' : '' ?>" src="<?= $e($ui->photo($food['photo'] ?? null)) ?>" alt="" width="640" height="480" loading="lazy" data-image-fallback="<?= $e($ui->asset('images/food-placeholder.svg')) ?>"><span class="category-tag"><?= $e($food['category']) ?></span></a>
-    <div class="food-body"><div class="food-origin"><?= $ui->icon('pin') ?><span><?= $e($ui->regionName($food['region_id'] ?? null)) ?></span></div><h3><a href="<?= $e($foodUrl) ?>"><?= $e($food['name']) ?></a></h3><p><?= $e($food['description'] ?? '') ?></p><a class="text-link" href="<?= $e($foodUrl) ?>">Baca Selengkapnya <span class="sr-only">tentang <?= $e($food['name']) ?></span><?= $ui->icon('arrow') ?></a></div>
-</article>

@@ -1,1 +1,0 @@
-<section class="container message-page"><span class="eyebrow"><?= $e($code ?? 'SIKULINER RIAU') ?></span><h1><?= $e($title) ?></h1><p><?= $e($message) ?></p><a class="button button-primary" href="<?= $e($ui->url('home')) ?>">Kembali ke Beranda <?= $ui->icon('arrow') ?></a></section>
