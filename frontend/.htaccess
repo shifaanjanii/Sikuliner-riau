@@ -1,0 +1,8 @@
+Options -Indexes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(?:app|resources|preview|docs|integration|tests)(?:/|$) - [F,L]
+    RewriteRule ^(?:\.|README|AGENTS|composer|package) - [F,L,NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

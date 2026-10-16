@@ -1,0 +1,7 @@
+<article class="container detail-page">
+    <a class="back-link" href="<?= $e($ui->url('catalog', [], ['q' => $d['q'], 'region' => $d['region'], 'page' => $d['page']])) ?>#jelajah"><?= $ui->icon('arrow-left') ?> Kembali ke Jelajah Kuliner</a>
+    <div class="detail-grid">
+        <div><img class="detail-photo <?= !empty($food['photo']) && strpos($food['photo'], 'images/') !== 0 ? 'is-photo' : '' ?>" src="<?= $e($ui->photo($food['photo'] ?? null)) ?>" alt="<?= $e($food['name']) ?>" width="800" height="800" data-image-fallback="<?= $e($ui->asset('images/food-placeholder.svg')) ?>"><?php if (!empty($food['photo']) && strpos($food['photo'], 'images/') === 0): ?><p class="detail-credit">Ilustrasi kuliner · gambar AI</p><?php endif; ?></div>
+        <div class="detail-info"><span class="category-tag"><?= $e($food['category']) ?></span><h1><?= $e($food['name']) ?></h1><div class="food-origin"><?= $ui->icon('pin') ?><?= $e($ui->regionName($food['region_id'] ?? null)) ?></div><h2 style="font-size:20px">Cerita di balik rasanya</h2><div class="detail-description"><?= $e($food['description'] ?? 'Cerita makanan ini belum tersedia.') ?></div><?php if (!empty($food['source']) && preg_match('~^https://~', $food['source'])): ?><a class="source-link" href="<?= $e($food['source']) ?>" target="_blank" rel="noopener noreferrer">Baca sumber informasi <?= $ui->icon('external') ?></a><?php endif; ?></div>
+    </div>
+</article>
