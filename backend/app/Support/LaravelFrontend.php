@@ -42,7 +42,7 @@ final class LaravelFrontend
         return new Frontend($data, [
             'connected' => true,
             'csrf' => (string) csrf_field(),
-            'assetBase' => asset('assets'),
+            'assetBase' => '/assets',
             'fieldMap' => $bindings['fields'] ?? [],
             'queryMap' => $bindings['queries'] ?? [],
             'regionPhotoEnabled' => $bindings['regionPhotoEnabled'] ?? false,
