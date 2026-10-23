@@ -11,7 +11,6 @@
             <div class="nav-account">
                 <?php if ($d['user']): ?>
                     <span class="account-name"><?= $ui->icon('user') ?><?= $e($d['user']['name']) ?></span>
-                    <?php if (!empty($d['user']['is_admin'])): ?><a class="button button-ghost button-small" href="<?= $e($ui->url('admin.home')) ?>">Admin <?= $ui->icon('arrow') ?></a><?php endif; ?>
                     <form action="<?= $e($ui->url('logout')) ?>" method="post" <?= !$ui->options['connected'] ? 'data-preview-form' : '' ?>>
                         <?= $ui->csrf() ?><button type="submit" class="button button-outline button-small">Keluar <?= $ui->icon('logout') ?></button>
                         <p class="form-feedback" role="status"></p>

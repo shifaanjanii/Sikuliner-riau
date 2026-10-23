@@ -22,9 +22,13 @@ Route::get('/tentang', [AboutController::class, 'index'])->name('about');
 // Guest authentication routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::get('/masuk', [AuthController::class, 'login']);
     Route::post('/login', [AuthController::class, 'storeLogin'])->middleware('throttle:30,1')->name('login.store');
+    Route::post('/masuk', [AuthController::class, 'storeLogin'])->middleware('throttle:30,1');
     Route::get('/register', [AuthController::class, 'register'])->name('register');
+    Route::get('/daftar', [AuthController::class, 'register']);
     Route::post('/register', [AuthController::class, 'storeRegistration'])->middleware('throttle:10,1')->name('register.store');
+    Route::post('/daftar', [AuthController::class, 'storeRegistration'])->middleware('throttle:10,1');
 });
 
 // Authenticated user routes
