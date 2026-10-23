@@ -324,6 +324,7 @@ h3 { font-size: 21px; }
 
 /* Forms and authentication. */
 input:not([type=file]), select, textarea { display: block; width: 100%; border: 1px solid #dfe5df; border-radius: 9px; background: #fff; color: var(--ink); padding: 12px 14px; transition: border-color .2s, box-shadow .2s; line-height: 1.5; }
+.filter-field input:not([type=file]), .filter-field select { padding-left: 46px; }
 input::placeholder, textarea::placeholder { color: #99a49b; }
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px #34946915; }
 input[aria-invalid=true], select[aria-invalid=true], textarea[aria-invalid=true] { border-color: #c15b52; }
