@@ -107,7 +107,7 @@ class AuthenticationTest extends TestCase
         $user = $this->user(true);
         $this->post('/login', ['email' => $user->email, 'password' => 'RasaRiau123'])
             ->assertRedirect('/admin');
-        $this->get('/admin')->assertOk()->assertSee('Kamu masuk sebagai administrator');
+        $this->get('/admin')->assertOk()->assertSee('Kelola data SiKuliner Riau');
     }
 
     public function test_login_rejects_wrong_password_without_flashing_it(): void

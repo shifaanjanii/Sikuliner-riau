@@ -6,6 +6,8 @@ return [
         'catalog' => 'catalog',
         'about' => 'about',
         'food.show' => 'food.show',
+        'shops.browse' => 'shops.browse',
+        'shops.show' => 'shops.show',
         'login' => 'login',
         'login.store' => 'login.store',
         'register' => 'register',

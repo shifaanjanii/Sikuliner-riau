@@ -46,6 +46,7 @@ final class Frontend
                 'login' => '/masuk', 'register' => '/daftar', 'logout' => '/keluar',
                 'login.store' => '/masuk', 'register.store' => '/daftar',
                 'food.show' => '/kuliner/{id}', 'admin.home' => '/admin',
+                'shops.browse' => '/toko', 'shops.show' => '/toko/{id}',
                 'regions.index' => '/admin/wilayah', 'regions.create' => '/admin/wilayah/tambah',
                 'regions.edit' => '/admin/wilayah/{id}/edit', 'regions.store' => '/admin/wilayah',
                 'regions.update' => '/admin/wilayah/{id}', 'regions.destroy' => '/admin/wilayah/{id}',

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kabupaten;
+use App\Models\KulinerKhas;
 use App\Models\Toko;
 use App\Support\LaravelFrontend;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class TokoController extends Controller
 {
@@ -70,6 +72,7 @@ class TokoController extends Controller
                     'latitude'  => '',
                     'longitude' => '',
                     'maps_url'  => '',
+                    'menus'     => [],
                 ],
             ]
         );
@@ -77,29 +80,8 @@ class TokoController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:150'],
-            'region_id' => ['required', 'exists:kabupaten,id'],
-            'alamat'    => ['required', 'string', 'max:255'],
-            'telepon'   => ['nullable', 'string', 'max:30'],
-            'jam_buka'  => ['nullable', 'string', 'max:100'],
-            'deskripsi' => ['nullable', 'string'],
-            'photo'     => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
-            'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            'maps_url'  => ['nullable', 'url', 'max:500'],
-        ], [
-            'name.required'      => 'Nama toko wajib diisi.',
-            'region_id.required' => 'Pilih kabupaten/kota lokasi toko.',
-            'region_id.exists'   => 'Kabupaten/kota tidak valid.',
-            'alamat.required'    => 'Alamat toko wajib diisi.',
-            'photo.image'        => 'File harus berupa gambar.',
-            'photo.mimes'        => 'Format gambar harus JPEG, PNG, atau WebP.',
-            'photo.max'          => 'Ukuran foto maksimal 2 MB.',
-            'latitude.between'   => 'Nilai latitude tidak valid.',
-            'longitude.between'  => 'Nilai longitude tidak valid.',
-            'maps_url.url'       => 'Tautan Google Maps harus berupa URL yang valid.',
-        ]);
+        $validated = $request->validate($this->shopRules(), $this->shopMessages());
+        $menuLinks = $this->menuLinks($request, $validated);
 
         $photoPath = null;
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
@@ -113,7 +95,7 @@ class TokoController extends Controller
             $photoPath = '/uploads/shops/' . $filename;
         }
 
-        Toko::create([
+        $toko = Toko::create([
             'kabupaten_id' => $validated['region_id'],
             'name'         => trim($validated['name']),
             'alamat'       => trim($validated['alamat']),
@@ -125,6 +107,9 @@ class TokoController extends Controller
             'longitude'    => isset($validated['longitude']) && $validated['longitude'] !== '' ? $validated['longitude'] : null,
             'maps_url'     => !empty($validated['maps_url']) ? trim($validated['maps_url']) : null,
         ]);
+        if ($menuLinks !== null) {
+            $toko->kulinerKhas()->sync($menuLinks);
+        }
 
         return redirect()->route('admin.shops.index')
             ->with('status', 'Toko berhasil ditambahkan.');
@@ -132,7 +117,7 @@ class TokoController extends Controller
 
     public function edit(Request $request, $id): Response
     {
-        $toko = Toko::findOrFail($id);
+        $toko = Toko::with('kulinerKhas')->findOrFail($id);
         $regions = Kabupaten::orderBy('name')->get();
         $regionsData = $regions->map->toPresentationArray()->all();
 
@@ -159,29 +144,8 @@ class TokoController extends Controller
     {
         $toko = Toko::findOrFail($id);
 
-        $validated = $request->validate([
-            'name'      => ['required', 'string', 'max:150'],
-            'region_id' => ['required', 'exists:kabupaten,id'],
-            'alamat'    => ['required', 'string', 'max:255'],
-            'telepon'   => ['nullable', 'string', 'max:30'],
-            'jam_buka'  => ['nullable', 'string', 'max:100'],
-            'deskripsi' => ['nullable', 'string'],
-            'photo'     => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
-            'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
-            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            'maps_url'  => ['nullable', 'url', 'max:500'],
-        ], [
-            'name.required'      => 'Nama toko wajib diisi.',
-            'region_id.required' => 'Pilih kabupaten/kota lokasi toko.',
-            'region_id.exists'   => 'Kabupaten/kota tidak valid.',
-            'alamat.required'    => 'Alamat toko wajib diisi.',
-            'photo.image'        => 'File harus berupa gambar.',
-            'photo.mimes'        => 'Format gambar harus JPEG, PNG, atau WebP.',
-            'photo.max'          => 'Ukuran foto maksimal 2 MB.',
-            'latitude.between'   => 'Nilai latitude tidak valid.',
-            'longitude.between'  => 'Nilai longitude tidak valid.',
-            'maps_url.url'       => 'Tautan Google Maps harus berupa URL yang valid.',
-        ]);
+        $validated = $request->validate($this->shopRules(), $this->shopMessages());
+        $menuLinks = $this->menuLinks($request, $validated);
 
         if ($request->hasFile('photo') && $request->file('photo')->isValid()) {
             if ($toko->photo && str_starts_with($toko->photo, '/uploads/shops/')) {
@@ -206,10 +170,19 @@ class TokoController extends Controller
         $toko->telepon      = !empty($validated['telepon']) ? trim($validated['telepon']) : null;
         $toko->jam_buka     = !empty($validated['jam_buka']) ? trim($validated['jam_buka']) : null;
         $toko->deskripsi    = !empty($validated['deskripsi']) ? trim($validated['deskripsi']) : null;
-        $toko->latitude     = isset($validated['latitude']) && $validated['latitude'] !== '' ? $validated['latitude'] : null;
-        $toko->longitude    = isset($validated['longitude']) && $validated['longitude'] !== '' ? $validated['longitude'] : null;
-        $toko->maps_url     = !empty($validated['maps_url']) ? trim($validated['maps_url']) : null;
+        if ($request->has('latitude')) {
+            $toko->latitude = $validated['latitude'] !== '' ? $validated['latitude'] : null;
+        }
+        if ($request->has('longitude')) {
+            $toko->longitude = $validated['longitude'] !== '' ? $validated['longitude'] : null;
+        }
+        if ($request->has('maps_url')) {
+            $toko->maps_url = !empty($validated['maps_url']) ? trim($validated['maps_url']) : null;
+        }
         $toko->save();
+        if ($menuLinks !== null) {
+            $toko->kulinerKhas()->sync($menuLinks);
+        }
 
         return redirect()->route('admin.shops.index')
             ->with('status', 'Toko berhasil diperbarui.');
@@ -230,5 +203,65 @@ class TokoController extends Controller
 
         return redirect()->route('admin.shops.index')
             ->with('status', 'Toko berhasil dihapus.');
+    }
+
+    private function shopRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:150'],
+            'region_id' => ['required', 'exists:kabupaten,id'],
+            'alamat' => ['required', 'string', 'max:255'],
+            'telepon' => ['nullable', 'string', 'max:30'],
+            'jam_buka' => ['nullable', 'string', 'max:100'],
+            'deskripsi' => ['nullable', 'string'],
+            'photo' => ['nullable', 'file', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+            'latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'maps_url' => ['nullable', 'url', 'max:500'],
+            'menu' => ['nullable', 'array'],
+            'menu.*.food_id' => ['required', 'integer', 'distinct', 'exists:kuliner_khas,id'],
+            'menu.*.selected' => ['nullable', 'boolean'],
+            'menu.*.price' => ['nullable', 'integer', 'min:0', 'max:999999999999'],
+        ];
+    }
+
+    private function shopMessages(): array
+    {
+        return [
+            'name.required' => 'Nama toko wajib diisi.',
+            'region_id.required' => 'Pilih kabupaten/kota lokasi toko.',
+            'region_id.exists' => 'Kabupaten/kota tidak valid.',
+            'alamat.required' => 'Alamat toko wajib diisi.',
+            'photo.image' => 'File harus berupa gambar.',
+            'photo.mimes' => 'Format gambar harus JPEG, PNG, atau WebP.',
+            'photo.max' => 'Ukuran foto maksimal 2 MB.',
+            'latitude.between' => 'Nilai latitude tidak valid.',
+            'longitude.between' => 'Nilai longitude tidak valid.',
+            'maps_url.url' => 'Tautan Google Maps harus berupa URL yang valid.',
+            'menu.*.food_id.exists' => 'Pilihan makanan tidak valid.',
+            'menu.*.price.integer' => 'Harga menu harus berupa angka bulat.',
+        ];
+    }
+
+    private function menuLinks(Request $request, array $validated): ?array
+    {
+        if (!$request->has('menu')) {
+            return null;
+        }
+
+        $links = [];
+        foreach ($validated['menu'] ?? [] as $index => $menu) {
+            if (empty($menu['selected'])) {
+                continue;
+            }
+            if (!array_key_exists('price', $menu) || $menu['price'] === null || $menu['price'] === '') {
+                throw ValidationException::withMessages([
+                    'menu' => 'Isi harga untuk setiap menu yang dipilih.',
+                ]);
+            }
+            $links[(int) $menu['food_id']] = ['harga' => (int) $menu['price']];
+        }
+
+        return $links;
     }
 }

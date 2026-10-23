@@ -119,7 +119,7 @@ class Sprint2Test extends TestCase
         $response->assertSee('Gulai patin berempah kuning khas Kampar.');
     }
 
-    public function test_food_detail_page_renders_connected_shops_and_maps(): void
+    public function test_food_detail_links_to_the_city_shop_directory(): void
     {
         $toko = Toko::create([
             'kabupaten_id' => $this->kampar->id,
@@ -134,10 +134,10 @@ class Sprint2Test extends TestCase
         $response = $this->get('/kuliner/' . $this->patin->id);
 
         $response->assertOk();
-        $response->assertSee('RM Pondok Patin Kampar');
-        $response->assertSee('Jl. Lintas Riau No. 12');
-        $response->assertSee('45.000');
-        $response->assertSee('https://maps.google.com/?q=Kampar');
+        $response->assertSee('Cari tempat mencicipinya');
+        $response->assertSee('/toko?region=' . $this->kampar->id, false);
+        $response->assertDontSee('RM Pondok Patin Kampar');
+        $response->assertDontSee('https://maps.google.com/?q=Kampar');
     }
 
     public function test_admin_can_view_regions_and_foods_lists(): void

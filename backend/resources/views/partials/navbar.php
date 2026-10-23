@@ -4,7 +4,7 @@
         <button class="icon-button mobile-toggle" type="button" data-menu-toggle="public-menu" aria-controls="public-menu" aria-expanded="false" aria-label="Buka menu navigasi"><?= $ui->icon('menu') ?></button>
         <nav class="public-nav" id="public-menu" aria-label="Navigasi utama">
             <div class="nav-links">
-                <?php foreach (['home' => 'Beranda', 'catalog' => 'Jelajah Kuliner', 'about' => 'Tentang'] as $route => $label): ?>
+                <?php foreach (['home' => 'Beranda', 'catalog' => 'Jelajah Kuliner', 'shops.browse' => 'Direktori Toko', 'about' => 'Tentang'] as $route => $label): ?>
                     <a href="<?= $e($ui->url($route)) ?>" <?= $active === $route ? 'aria-current="page"' : '' ?>><?= $e($label) ?></a>
                 <?php endforeach; ?>
             </div>

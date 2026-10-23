@@ -39,7 +39,7 @@ class Toko extends Model
 
     public function toPresentationArray(): array
     {
-        return [
+        $data = [
             'id'          => (string) $this->id,
             'name'        => $this->name,
             'region_id'   => $this->kabupaten_id ? (string) $this->kabupaten_id : null,
@@ -53,5 +53,18 @@ class Toko extends Model
             'longitude'   => $this->longitude ? (float) $this->longitude : null,
             'maps_url'    => $this->maps_url,
         ];
+
+        if ($this->relationLoaded('kulinerKhas')) {
+            $data['menus'] = $this->kulinerKhas->map(static function (KulinerKhas $food): array {
+                return [
+                    'id' => (string) $food->id,
+                    'name' => $food->name,
+                    'category' => $food->category,
+                    'price' => $food->pivot?->harga,
+                ];
+            })->values()->all();
+        }
+
+        return $data;
     }
 }

@@ -8,12 +8,15 @@ use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/kuliner', [CatalogController::class, 'index'])->name('catalog');
 Route::get('/kuliner/{id}', [CatalogController::class, 'show'])->name('food.show');
+Route::get('/toko', [ShopController::class, 'index'])->name('shops.browse');
+Route::get('/toko/{id}', [ShopController::class, 'show'])->name('shops.show');
 Route::get('/tentang', [AboutController::class, 'index'])->name('about');
 
 // Guest authentication routes

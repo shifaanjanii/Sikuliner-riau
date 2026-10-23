@@ -2,7 +2,7 @@
     <div class="sidebar-brand"><?php $ui->partial('partials.brand'); ?><button class="icon-button sidebar-close" type="button" data-menu-close="admin-sidebar" aria-label="Tutup menu admin"><?= $ui->icon('close') ?></button></div>
     <span class="sidebar-caption">RUANG PENGELOLA</span>
     <nav class="sidebar-nav">
-        <?php foreach (['admin.home' => ['home', 'Beranda Admin'], 'regions.index' => ['pin', 'Kabupaten/Kota'], 'foods.index' => ['food', 'Makanan Khas']] as $route => [$icon, $label]): ?>
+        <?php foreach (['admin.home' => ['home', 'Beranda Admin'], 'regions.index' => ['pin', 'Kabupaten/Kota'], 'foods.index' => ['food', 'Makanan Khas'], 'shops.index' => ['pin', 'Direktori Toko']] as $route => [$icon, $label]): ?>
         <a href="<?= $e($ui->url($route)) ?>" <?= $active === $route ? 'aria-current="page"' : '' ?>><?= $ui->icon($icon) ?><span><?= $e($label) ?></span><?= $ui->icon('chevron', 'sidebar-chevron') ?></a>
         <?php endforeach; ?>
     </nav>

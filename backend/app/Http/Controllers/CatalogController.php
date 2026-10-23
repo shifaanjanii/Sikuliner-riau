@@ -33,7 +33,7 @@ class CatalogController extends Controller
         $page = max(1, (int) $request->query('page', 1));
         $perPage = 6;
 
-        $foodQuery = KulinerKhas::with('kabupaten');
+        $foodQuery = KulinerKhas::with(['kabupaten', 'toko.kabupaten']);
         if ($regionId !== '') {
             $foodQuery->where('kabupaten_id', $regionId);
         }

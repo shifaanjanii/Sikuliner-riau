@@ -221,6 +221,20 @@
     dialog?.addEventListener('close', () => deleteTrigger?.focus());
     dialog?.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
 
+    $$('.menu-editor-row').forEach(row => {
+        const checkbox = $('input[type="checkbox"]', row);
+        const price = $('input[type="number"]', row);
+        if (!checkbox || !price) return;
+        const refresh = () => {
+            const selected = checkbox.checked;
+            row.classList.toggle('is-selected', selected);
+            price.disabled = !selected;
+            price.required = selected;
+        };
+        checkbox.addEventListener('change', refresh);
+        refresh();
+    });
+
     if ('IntersectionObserver' in window && !reducedMotion.matches) {
         const observer = new IntersectionObserver(entries => entries.forEach(entry => {
             if (entry.isIntersecting) { entry.target.classList.add('is-revealed'); observer.unobserve(entry.target); }
