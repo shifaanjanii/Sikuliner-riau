@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Toko extends Model
 {
@@ -37,21 +38,41 @@ class Toko extends Model
             ->withPivot('harga');
     }
 
+    public function ulasan(): HasMany
+    {
+        return $this->hasMany(Ulasan::class, 'toko_id')->latest();
+    }
+
+    public function averageRating(): float
+    {
+        return round((float) $this->ulasan()->avg('rating'), 1);
+    }
+
+    public function reviewsCount(): int
+    {
+        return (int) $this->ulasan()->count();
+    }
+
     public function toPresentationArray(): array
     {
+        $avg = $this->averageRating();
+        $count = $this->reviewsCount();
+
         $data = [
-            'id'          => (string) $this->id,
-            'name'        => $this->name,
-            'region_id'   => $this->kabupaten_id ? (string) $this->kabupaten_id : null,
-            'region_name' => $this->kabupaten?->name ?? '',
-            'alamat'      => $this->alamat,
-            'telepon'     => $this->telepon,
-            'jam_buka'    => $this->jam_buka,
-            'deskripsi'   => $this->deskripsi ?? '',
-            'photo'       => $this->photo,
-            'latitude'    => $this->latitude ? (float) $this->latitude : null,
-            'longitude'   => $this->longitude ? (float) $this->longitude : null,
-            'maps_url'    => $this->maps_url,
+            'id'             => (string) $this->id,
+            'name'           => $this->name,
+            'region_id'      => $this->kabupaten_id ? (string) $this->kabupaten_id : null,
+            'region_name'    => $this->kabupaten?->name ?? '',
+            'alamat'         => $this->alamat,
+            'telepon'        => $this->telepon,
+            'jam_buka'       => $this->jam_buka,
+            'deskripsi'      => $this->deskripsi ?? '',
+            'photo'          => $this->photo,
+            'latitude'       => $this->latitude ? (float) $this->latitude : null,
+            'longitude'      => $this->longitude ? (float) $this->longitude : null,
+            'maps_url'       => $this->maps_url,
+            'average_rating' => $avg > 0 ? $avg : null,
+            'reviews_count'  => $count,
         ];
 
         if ($this->relationLoaded('kulinerKhas')) {
@@ -63,6 +84,10 @@ class Toko extends Model
                     'price' => $food->pivot?->harga,
                 ];
             })->values()->all();
+        }
+
+        if ($this->relationLoaded('ulasan')) {
+            $data['reviews'] = $this->ulasan->map->toPresentationArray()->all();
         }
 
         return $data;

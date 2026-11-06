@@ -41,8 +41,8 @@ final class LaravelFrontend
         $parameterMap = $bindings['parameterMap'] ?? [];
         return new Frontend($data, [
             'connected' => true,
-            'csrf' => csrf_field(),
-            'assetBase' => asset('assets'),
+            'csrf' => (string) csrf_field(),
+            'assetBase' => '/assets',
             'fieldMap' => $bindings['fields'] ?? [],
             'queryMap' => $bindings['queries'] ?? [],
             'regionPhotoEnabled' => $bindings['regionPhotoEnabled'] ?? false,
@@ -54,7 +54,8 @@ final class LaravelFrontend
                 foreach ($parameters as $name => $value) {
                     $mapped[$parameterMap[$key][$name] ?? $name] = $value;
                 }
-                return route($routeNames[$key], $mapped);
+                $target = $routeNames[$key] ?? $key;
+                return route($target, $mapped);
             },
         ]);
     }

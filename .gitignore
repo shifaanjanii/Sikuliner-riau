@@ -20,6 +20,8 @@ backend/storage/framework/views/*
 backend/storage/logs/*
 !backend/storage/logs/.gitignore
 backend/public/storage
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
 backend/public/build
 backend/public/hot
 /storage/*.key

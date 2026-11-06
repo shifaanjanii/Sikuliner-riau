@@ -4,12 +4,15 @@
         <button class="icon-button mobile-toggle" type="button" data-menu-toggle="public-menu" aria-controls="public-menu" aria-expanded="false" aria-label="Buka menu navigasi"><?= $ui->icon('menu') ?></button>
         <nav class="public-nav" id="public-menu" aria-label="Navigasi utama">
             <div class="nav-links">
-                <?php foreach (['home' => 'Beranda', 'catalog' => 'Jelajah Kuliner', 'shops.browse' => 'Direktori Toko', 'about' => 'Tentang'] as $route => $label): ?>
+                <?php foreach (['home' => 'Beranda', 'catalog' => 'Jelajah Kuliner', 'shops.browse' => 'Direktori Toko', 'promotion.create' => 'Promosikan Toko', 'about' => 'Tentang'] as $route => $label): ?>
                     <a href="<?= $e($ui->url($route)) ?>" <?= $active === $route ? 'aria-current="page"' : '' ?>><?= $e($label) ?></a>
                 <?php endforeach; ?>
             </div>
             <div class="nav-account">
                 <?php if ($d['user']): ?>
+                    <?php if (!empty($d['user']['is_admin'])): ?>
+                        <a class="button button-ghost button-small" href="<?= $e($ui->url('admin.home')) ?>" style="border: 1px dashed var(--green, #0f766e); font-weight: 600;">Panel Admin</a>
+                    <?php endif; ?>
                     <span class="account-name"><?= $ui->icon('user') ?><?= $e($d['user']['name']) ?></span>
                     <form action="<?= $e($ui->url('logout')) ?>" method="post" <?= !$ui->options['connected'] ? 'data-preview-form' : '' ?>>
                         <?= $ui->csrf() ?><button type="submit" class="button button-outline button-small">Keluar <?= $ui->icon('logout') ?></button>

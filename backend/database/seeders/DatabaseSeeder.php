@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             KabupatenKulinerSeeder::class,
             TokoSeeder::class,
+            PengajuanTokoSeeder::class,
+            UlasanSeeder::class,
         ]);
     }
 }

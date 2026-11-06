@@ -46,12 +46,23 @@ final class Frontend
                 'login' => '/masuk', 'register' => '/daftar', 'logout' => '/keluar',
                 'login.store' => '/masuk', 'register.store' => '/daftar',
                 'food.show' => '/kuliner/{id}', 'admin.home' => '/admin',
+                'shops.browse' => '/toko', 'shops.show' => '/toko/{id}',
                 'regions.index' => '/admin/wilayah', 'regions.create' => '/admin/wilayah/tambah',
                 'regions.edit' => '/admin/wilayah/{id}/edit', 'regions.store' => '/admin/wilayah',
                 'regions.update' => '/admin/wilayah/{id}', 'regions.destroy' => '/admin/wilayah/{id}',
                 'foods.index' => '/admin/makanan', 'foods.create' => '/admin/makanan/tambah',
                 'foods.edit' => '/admin/makanan/{id}/edit', 'foods.store' => '/admin/makanan',
                 'foods.update' => '/admin/makanan/{id}', 'foods.destroy' => '/admin/makanan/{id}',
+                'shops.index' => '/admin/toko', 'shops.create' => '/admin/toko/tambah',
+                'shops.edit' => '/admin/toko/{id}/edit', 'shops.store' => '/admin/toko',
+                'shops.update' => '/admin/toko/{id}', 'shops.destroy' => '/admin/toko/{id}',
+                'promotion.create' => '/promosi', 'promotion.store' => '/promosi',
+                'shops.review.store' => '/toko/{id}/ulasan',
+                'admin.promotions.index' => '/admin/pengajuan',
+                'admin.promotions.approve' => '/admin/pengajuan/{id}/approve',
+                'admin.promotions.reject' => '/admin/pengajuan/{id}/reject',
+                'admin.reviews.index' => '/admin/ulasan',
+                'admin.reviews.destroy' => '/admin/ulasan/{id}',
             ];
             if (!isset($routes[$name])) {
                 throw new \InvalidArgumentException('Unknown UI route: ' . $name);
@@ -185,6 +196,8 @@ final class Frontend
             'check' => '<path d="m5 12 4 4L19 6"/>',
             'book' => '<path d="M12 5v16M3 3c4-1 7 0 9 2 2-2 5-3 9-2v16c-4-1-7 0-9 2-2-2-5-3-9-2Z"/>',
             'spark' => '<path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/>',
+            'star' => '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+            'map' => '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>',
             'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
         ];
         return '<svg class="icon ' . self::escape($class) . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ($paths[$name] ?? $paths['info']) . '</svg>';

@@ -28,6 +28,11 @@ class Kabupaten extends Model
         return $this->hasMany(Toko::class, 'kabupaten_id');
     }
 
+    public function pengajuanToko(): HasMany
+    {
+        return $this->hasMany(PengajuanToko::class, 'kabupaten_id');
+    }
+
     public function toPresentationArray(): array
     {
         return [

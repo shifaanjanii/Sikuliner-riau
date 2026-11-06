@@ -18,7 +18,7 @@ class ShopController extends Controller
 
         $shops = collect();
         if ($selectedRegion) {
-            $shops = Toko::with(['kabupaten', 'kulinerKhas'])
+            $shops = Toko::with(['kabupaten', 'kulinerKhas', 'ulasan'])
                 ->where('kabupaten_id', $selectedRegion->id)
                 ->orderBy('name')
                 ->get();
@@ -41,7 +41,7 @@ class ShopController extends Controller
 
     public function show(Request $request, $id): Response
     {
-        $shop = Toko::with(['kabupaten', 'kulinerKhas'])->findOrFail($id);
+        $shop = Toko::with(['kabupaten', 'kulinerKhas', 'ulasan'])->findOrFail($id);
         $regions = Kabupaten::orderBy('name')->get();
         $regionId = trim((string) $request->query('region', $shop->kabupaten_id));
 

@@ -54,7 +54,8 @@ final class LaravelFrontend
                 foreach ($parameters as $name => $value) {
                     $mapped[$parameterMap[$key][$name] ?? $name] = $value;
                 }
-                return route($routeNames[$key], $mapped);
+                $target = $routeNames[$key] ?? $key;
+                return route($target, $mapped);
             },
         ]);
     }

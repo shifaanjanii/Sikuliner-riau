@@ -4,10 +4,14 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\KabupatenController;
 use App\Http\Controllers\Admin\KulinerKhasController;
+use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Admin\TokoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +22,13 @@ Route::get('/kuliner/{id}', [CatalogController::class, 'show'])->name('food.show
 Route::get('/toko', [ShopController::class, 'index'])->name('shops.browse');
 Route::get('/toko/{id}', [ShopController::class, 'show'])->name('shops.show');
 Route::get('/tentang', [AboutController::class, 'index'])->name('about');
+
+// Sprint 4: Public Promotion Submission
+Route::get('/promosi', [PromotionController::class, 'create'])->name('promotion.create');
+Route::post('/promosi', [PromotionController::class, 'store'])->name('promotion.store');
+
+// Sprint 5: Public Review Submission
+Route::post('/toko/{id}/ulasan', [ReviewController::class, 'store'])->name('shops.review.store');
 
 // Guest authentication routes
 Route::middleware('guest')->group(function () {
@@ -64,4 +75,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/toko/{id}/edit', [TokoController::class, 'edit'])->name('shops.edit');
     Route::put('/toko/{id}', [TokoController::class, 'update'])->name('shops.update');
     Route::delete('/toko/{id}', [TokoController::class, 'destroy'])->name('shops.destroy');
+
+    // Sprint 4: Moderasi Pengajuan Promosi Toko
+    Route::get('/pengajuan', [AdminPromotionController::class, 'index'])->name('promotions.index');
+    Route::post('/pengajuan/{id}/approve', [AdminPromotionController::class, 'approve'])->name('promotions.approve');
+    Route::post('/pengajuan/{id}/reject', [AdminPromotionController::class, 'reject'])->name('promotions.reject');
+
+    // Sprint 5: Moderasi Ulasan Pengunjung
+    Route::get('/ulasan', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::delete('/ulasan/{id}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
 });

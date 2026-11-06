@@ -20,3 +20,8 @@
     <p class="form-feedback" role="status" tabindex="-1"></p>
 </form>
 <p class="auth-switch"><?= $register ? 'Sudah punya akun?' : 'Belum punya akun?' ?> <a href="<?= $e($ui->url($register ? 'login' : 'register')) ?>"><?= $register ? 'Masuk di sini' : 'Daftar sekarang' ?> <?= $ui->icon('arrow') ?></a></p>
+<p style="text-align: center; margin-top: 14px;">
+    <a href="<?= $e($ui->url('home')) ?>" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #6b7280; text-decoration: none;">
+        <?= $ui->icon('arrow-left') ?> Kembali ke Landing Page
+    </a>
+</p>

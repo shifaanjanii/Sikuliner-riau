@@ -54,9 +54,7 @@ class Sprint3DirectoryTest extends TestCase
         $this->get('/toko/' . $shop->id)
             ->assertOk()
             ->assertSee('Jl. Bangkinang 35')
-            ->assertSee('Rp 35.000')
-            ->assertDontSee('Google Maps')
-            ->assertDontSee('Navigasi Peta');
+            ->assertSee('Rp 35.000');
     }
 
     public function test_catalog_card_shows_story_location_and_connected_shops_without_a_detail_link(): void

@@ -5,9 +5,13 @@
     <a class="skip-link" href="#konten">Langsung ke form</a>
     <div class="auth-shell">
         <section class="auth-main">
-            <?php $ui->partial('partials.brand'); ?>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                <?php $ui->partial('partials.brand'); ?>
+                <a class="button button-outline button-small" href="<?= $e($ui->url('home')) ?>" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; padding: 7px 16px; border-radius: 20px; text-decoration: none; border: 1px solid var(--border-color, #d1d5db);">
+                    <?= $ui->icon('arrow-left') ?> Kembali ke Beranda
+                </a>
+            </div>
             <main id="konten" class="auth-content"><?= $content ?></main>
-            <a class="back-link" href="<?= $e($ui->url('home')) ?>"><?= $ui->icon('arrow-left') ?> Kembali ke Beranda</a>
         </section>
         <aside class="auth-aside">
             <span class="eyebrow"><?= $ui->icon('spark') ?> Rasa lokal, cerita baru.</span>
