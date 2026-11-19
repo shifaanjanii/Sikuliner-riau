@@ -8,7 +8,7 @@
             'foods.index' => ['food', 'Makanan Khas'],
             'shops.index' => ['pin', 'Direktori Toko'],
             'admin.promotions.index' => ['check', 'Pengajuan Toko'],
-            'admin.reviews.index' => ['star', 'Moderasi Ulasan'],
+            'admin.reviews.index' => ['star', 'Ulasan Wisatawan'],
         ] as $route => [$icon, $label]): ?>
         <a href="<?= $e($ui->url($route)) ?>" <?= $active === $route ? 'aria-current="page"' : '' ?>><?= $ui->icon($icon) ?><span><?= $e($label) ?></span><?= $ui->icon('chevron', 'sidebar-chevron') ?></a>
         <?php endforeach; ?>

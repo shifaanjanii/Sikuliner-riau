@@ -180,9 +180,9 @@
     </a>
     <a class="shortcut-card" href="<?= $e($ui->url('admin.reviews.index')) ?>">
         <span class="shortcut-icon"><?= $ui->icon('star') ?></span>
-        <h3>Moderasi Ulasan</h3>
-        <p>Pantau testimoni, rating kepuasan bintang, dan hapus ulasan.</p>
-        <span class="text-link">Moderasi ulasan <?= $ui->icon('arrow') ?></span>
+        <h3>Ulasan Wisatawan</h3>
+        <p>Pantau testimoni dan rating kepuasan bintang dari pengunjung.</p>
+        <span class="text-link">Lihat ulasan <?= $ui->icon('arrow') ?></span>
     </a>
 </div>
 

@@ -1,7 +1,7 @@
 <div class="admin-heading">
     <div>
         <h1><?= $e($title) ?></h1>
-        <p>Pantau dan kelola seluruh ulasan serta rating yang dikirimkan oleh wisatawan dan pengunjung.</p>
+        <p>Pantau testimoni serta rating yang dikirimkan oleh wisatawan dan pengunjung.</p>
     </div>
 </div>
 
@@ -36,7 +36,6 @@
                         <th scope="col">Rating</th>
                         <th scope="col">Komentar</th>
                         <th scope="col">Waktu</th>
-                        <th scope="col" style="text-align:center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,15 +61,6 @@
                             </td>
                             <td>
                                 <small style="color:#6b7280;"><?= $e($rev['formatted_date']) ?></small>
-                            </td>
-                            <td style="text-align:center;">
-                                <form method="post" action="<?= $e($ui->url('admin.reviews.destroy', ['id' => $rev['id']])) ?>" onsubmit="return confirm('Hapus ulasan ini dari sistem?')">
-                                    <?= $ui->csrf() ?>
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="icon-button delete-button" aria-label="Hapus ulasan" title="Hapus ulasan">
-                                        <?= $ui->icon('trash') ?>
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>
